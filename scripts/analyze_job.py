@@ -1,4 +1,4 @@
-"""Extract a posting using a locally running Ollama model."""
+"""Extract a job posting with local Ollama. / 로컬 Ollama로 채용 공고를 분석합니다."""
 
 import argparse
 import json
@@ -32,7 +32,7 @@ SCHEMA = {
 
 
 def opt_source_sentences(posting):
-    """Return source sentences that name OPT separately from STEM OPT."""
+    """Find ordinary OPT sentences, excluding STEM OPT. / STEM OPT를 제외한 일반 OPT 문장을 찾습니다."""
     sentences = re.split(r"(?<=[.!?])\s+", posting.strip())
     return [
         sentence.strip()
@@ -46,7 +46,7 @@ def opt_source_sentences(posting):
 
 
 def stem_opt_source_sentences(posting):
-    """Return source sentences that explicitly name STEM OPT."""
+    """Find explicit STEM OPT sentences. / STEM OPT를 명시한 문장을 찾습니다."""
     sentences = re.split(r"(?<=[.!?])\s+", posting.strip())
     return [
         sentence.strip()
@@ -57,17 +57,17 @@ def stem_opt_source_sentences(posting):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", default="qwen3:8b")
+    parser.add_argument("--model", default="qwen3:8b", help="Ollama model name / Ollama 모델 이름")
     parser.add_argument(
         "--file", type=Path, default=Path(__file__).resolve().parents[1] / "samples" / "job.txt",
-        help="Path to a plain-text job posting",
+        help="Plain-text posting path / 텍스트 채용 공고 경로",
     )
-    parser.add_argument("--dry-run", action="store_true", help="Show input without calling AI")
+    parser.add_argument("--dry-run", action="store_true", help="Show input without AI / AI 호출 없이 입력 표시")
     args = parser.parse_args()
     try:
         posting = args.file.read_text(encoding="utf-8")
     except OSError as error:
-        print("Cannot read posting: {}".format(error), file=sys.stderr)
+        print("Cannot read posting / 공고를 읽을 수 없습니다: {}".format(error), file=sys.stderr)
         return 1
     if args.dry_run:
         print(posting)
@@ -120,19 +120,19 @@ def main():
         with urlopen(request, timeout=300) as response:
             result = json.load(response)
         if result.get("done_reason") == "length":
-            raise ValueError("Model output was truncated")
+            raise ValueError("Model output was truncated / 모델 출력이 잘렸습니다")
         extracted = json.loads(result["message"]["content"])
         if not isinstance(extracted, dict) or set(extracted) != set(SCHEMA["required"]):
-            raise ValueError("Unexpected output fields")
+            raise ValueError("Unexpected output fields / 예상과 다른 출력 필드")
         string_fields = set(SCHEMA["required"]) - {"skills"}
         if any(not isinstance(extracted[key], str) for key in string_fields):
-            raise ValueError("Expected string fields")
+            raise ValueError("Expected string fields / 문자열 필드가 필요합니다")
         if not isinstance(extracted["skills"], list) or any(
             not isinstance(skill, str) for skill in extracted["skills"]
         ):
-            raise ValueError("Expected a list of skills")
+            raise ValueError("Expected a list of skills / 기술 목록이 필요합니다")
         if extracted["opt_status"] not in ["yes", "no", "unknown"]:
-            raise ValueError("Invalid OPT status")
+            raise ValueError("Invalid OPT status / OPT 상태가 올바르지 않습니다")
         opt_evidence = extracted["opt_evidence"]
         if not opt_sentences:
             extracted["opt_status"] = "unknown"
@@ -143,7 +143,7 @@ def main():
             extracted["opt_status"] = "unknown"
             extracted["opt_evidence"] = ""
         if extracted["stem_opt_status"] not in ["yes", "no", "unknown"]:
-            raise ValueError("Invalid STEM OPT status")
+            raise ValueError("Invalid STEM OPT status / STEM OPT 상태가 올바르지 않습니다")
         stem_opt_evidence = extracted["stem_opt_evidence"]
         if not stem_opt_sentences:
             extracted["stem_opt_status"] = "unknown"
@@ -154,17 +154,17 @@ def main():
             extracted["stem_opt_status"] = "unknown"
             extracted["stem_opt_evidence"] = ""
     except HTTPError as error:
-        print("Ollama HTTP error {}. Check server and model installation.".format(error.code), file=sys.stderr)
+        print("Ollama HTTP error {} / Ollama HTTP 오류 {}. Check server and model / 서버와 모델을 확인하세요.".format(error.code, error.code), file=sys.stderr)
         return 1
     except (URLError, TimeoutError, OSError):
-        print("Cannot reach Ollama or request timed out. Run ollama serve and check ollama list.", file=sys.stderr)
+        print("Cannot reach Ollama or request timed out / Ollama 연결 실패 또는 시간 초과. Run ollama serve and check ollama list / ollama serve를 실행하고 ollama list를 확인하세요.", file=sys.stderr)
         return 1
     except (ValueError, KeyError, TypeError) as error:
-        print("Invalid AI response: {}".format(error), file=sys.stderr)
+        print("Invalid AI response / 잘못된 AI 응답: {}".format(error), file=sys.stderr)
         return 1
 
     print(json.dumps(extracted, ensure_ascii=False, indent=2))
-    print("Elapsed: {:.1f}s".format(time.perf_counter() - started))
+    print("Elapsed / 소요 시간: {:.1f}s".format(time.perf_counter() - started))
     return 0
 
 
