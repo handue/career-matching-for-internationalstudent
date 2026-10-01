@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Analytics
+Title: Junior Data Analyst
+Location: Boston, MA, USA
+Requirements: Python, SQL, and 0-2 years of professional experience.
+Visa sponsorship: We are unable to provide visa sponsorship for this position.

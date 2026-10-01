@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Robotics
+Title: Junior Robotics Engineer
+Location: Austin, TX, USA
+Requirements: Python, ROS, and a bachelor's degree in engineering.
+Visa sponsorship: Visa sponsorship is available only for candidates who already hold F-1 OPT work authorization.

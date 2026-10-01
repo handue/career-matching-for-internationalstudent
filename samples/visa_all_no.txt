@@ -1,0 +1,10 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Operations
+Title: Operations Analyst
+Location: Phoenix, AZ, USA
+Requirements: SQL and reporting.
+We do not accept candidates working under CPT.
+We do not accept candidates working under OPT.
+We do not support STEM OPT employment for this position.
+We do not provide H-1B sponsorship for this position.
+We do not sponsor employment-based green card applications for this position.

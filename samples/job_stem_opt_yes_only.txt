@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Lab
+Title: Laboratory Data Specialist
+Location: Raleigh, NC, USA
+Requirements: Python and laboratory data analysis.
+We support eligible STEM OPT employees and will complete Form I-983.

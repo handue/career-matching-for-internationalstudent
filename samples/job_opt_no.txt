@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Finance
+Title: Data Analyst
+Location: Chicago, IL, USA
+Requirements: SQL and spreadsheet analysis.
+Candidates working under F-1 OPT are not eligible for this role.

@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Bio
+Title: Research Data Associate
+Location: San Diego, CA, USA
+Requirements: Python, statistics, and laboratory data analysis experience.
+Visa sponsorship: We offer H-1B visa sponsorship for qualified candidates.

@@ -1,0 +1,7 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Data
+Title: Junior Data Engineer
+Location: New York, NY, USA
+Requirements: Python and SQL.
+Candidates working under F-1 OPT are welcome.
+We do not provide H-1B sponsorship for this role.

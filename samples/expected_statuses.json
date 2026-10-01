@@ -1,0 +1,44 @@
+{
+  "visa_all_yes.txt": {
+    "cpt": "yes",
+    "opt": "yes",
+    "stem_opt": "yes",
+    "h1b": "yes",
+    "green_card": "yes"
+  },
+  "visa_all_no.txt": {
+    "cpt": "no",
+    "opt": "no",
+    "stem_opt": "no",
+    "h1b": "no",
+    "green_card": "no"
+  },
+  "visa_all_unknown.txt": {
+    "cpt": "unknown",
+    "opt": "unknown",
+    "stem_opt": "unknown",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  },
+  "visa_mixed.txt": {
+    "cpt": "yes",
+    "opt": "yes",
+    "stem_opt": "no",
+    "h1b": "no",
+    "green_card": "unknown"
+  },
+  "job.txt": {
+    "cpt": "unknown",
+    "opt": "unknown",
+    "stem_opt": "unknown",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  },
+  "job_stem_opt_yes_only.txt": {
+    "cpt": "unknown",
+    "opt": "unknown",
+    "stem_opt": "yes",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  }
+}

@@ -1,0 +1,10 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Research
+Title: Research Software Engineer
+Location: Boston, MA, USA
+Requirements: Python and data analysis.
+We accept F-1 students with school-authorized CPT for this internship.
+Candidates working under F-1 OPT are welcome.
+We support eligible STEM OPT employees and will complete Form I-983.
+We provide H-1B sponsorship for this position.
+We also sponsor eligible employees for employment-based permanent residence (green card).

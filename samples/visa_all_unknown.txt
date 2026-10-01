@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Design
+Title: Product Data Analyst
+Location: Seattle, WA, USA
+Requirements: Python, SQL, and dashboard development.
+Hybrid work is available three days per week.

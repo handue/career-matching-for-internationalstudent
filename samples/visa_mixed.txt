@@ -1,0 +1,9 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Health
+Title: Data Science Intern
+Location: San Francisco, CA, USA
+Requirements: Python and statistics.
+Students with authorized CPT may apply.
+Candidates working under OPT are welcome.
+We cannot support STEM OPT employment for this role.
+We do not provide H-1B sponsorship.
