@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Materials
+Title: Research Engineer
+Location: Raleigh, NC, USA
+Requirements: Python and materials science.
+We sponsor eligible employees for employment-based permanent residence (green card).

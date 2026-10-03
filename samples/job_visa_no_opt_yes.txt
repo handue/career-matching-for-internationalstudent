@@ -1,0 +1,7 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Metrics
+Title: Data Analyst
+Location: Denver, CO, USA
+Requirements: SQL and Python.
+Candidates working under F-1 OPT are welcome.
+We do not provide work visa sponsorship for this role.

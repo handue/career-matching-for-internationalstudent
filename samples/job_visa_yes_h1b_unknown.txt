@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Cloud
+Title: Platform Engineer
+Location: Chicago, IL, USA
+Requirements: Python and cloud infrastructure.
+We offer work visa sponsorship for qualified candidates.

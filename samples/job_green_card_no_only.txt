@@ -1,0 +1,6 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Networks
+Title: Network Analyst
+Location: Portland, OR, USA
+Requirements: Python and network monitoring.
+We do not sponsor employment-based green card applications for this role.

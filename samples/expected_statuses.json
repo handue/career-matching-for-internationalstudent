@@ -3,6 +3,7 @@
     "cpt": "yes",
     "opt": "yes",
     "stem_opt": "yes",
+    "visa_sponsorship": "yes",
     "h1b": "yes",
     "green_card": "yes"
   },
@@ -10,6 +11,7 @@
     "cpt": "no",
     "opt": "no",
     "stem_opt": "no",
+    "visa_sponsorship": "unknown",
     "h1b": "no",
     "green_card": "no"
   },
@@ -17,6 +19,7 @@
     "cpt": "unknown",
     "opt": "unknown",
     "stem_opt": "unknown",
+    "visa_sponsorship": "unknown",
     "h1b": "unknown",
     "green_card": "unknown"
   },
@@ -24,6 +27,7 @@
     "cpt": "yes",
     "opt": "yes",
     "stem_opt": "no",
+    "visa_sponsorship": "unknown",
     "h1b": "no",
     "green_card": "unknown"
   },
@@ -31,6 +35,7 @@
     "cpt": "unknown",
     "opt": "unknown",
     "stem_opt": "unknown",
+    "visa_sponsorship": "no",
     "h1b": "unknown",
     "green_card": "unknown"
   },
@@ -38,6 +43,87 @@
     "cpt": "unknown",
     "opt": "unknown",
     "stem_opt": "yes",
+    "visa_sponsorship": "unknown",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  },
+  "job_cpt_yes_only.txt": {
+    "cpt": "yes",
+    "opt": "unknown",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "unknown",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  },
+  "job_visa_no_opt_yes.txt": {
+    "cpt": "unknown",
+    "opt": "yes",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "no",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  },
+  "job_visa_yes_h1b_unknown.txt": {
+    "cpt": "unknown",
+    "opt": "unknown",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "yes",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  },
+  "job_green_card_yes_only.txt": {
+    "cpt": "unknown",
+    "opt": "unknown",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "unknown",
+    "h1b": "unknown",
+    "green_card": "yes"
+  },
+  "job_green_card_no_only.txt": {
+    "cpt": "unknown",
+    "opt": "unknown",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "unknown",
+    "h1b": "unknown",
+    "green_card": "no"
+  },
+  "job_opt_yes_h1b_no.txt": {
+    "cpt": "unknown",
+    "opt": "yes",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "unknown",
+    "h1b": "no",
+    "green_card": "unknown"
+  },
+  "job_sponsorship_yes.txt": {
+    "cpt": "unknown",
+    "opt": "unknown",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "yes",
+    "h1b": "yes",
+    "green_card": "unknown"
+  },
+  "job_sponsorship_conditional.txt": {
+    "cpt": "unknown",
+    "opt": "yes",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "yes",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  },
+  "job_opt_no.txt": {
+    "cpt": "unknown",
+    "opt": "no",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "unknown",
+    "h1b": "unknown",
+    "green_card": "unknown"
+  },
+  "job_sponsorship_unknown.txt": {
+    "cpt": "unknown",
+    "opt": "unknown",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "unknown",
     "h1b": "unknown",
     "green_card": "unknown"
   }
