@@ -11,8 +11,10 @@ import sys
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-ROOT = Path(__file__).resolve().parents[1]
-BLOCK_TAGS = {"p", "div", "li", "br", "h1", "h2", "h3", "ul", "ol"}
+from job_record import SourceMetadata
+
+ROOT: Path = Path(__file__).resolve().parents[1]
+BLOCK_TAGS: set[str] = {"p", "div", "li", "br", "h1", "h2", "h3", "ul", "ol"}
 
 
 # HTMLParser subclass to extract text and line breaks from HTML content.
@@ -20,23 +22,23 @@ BLOCK_TAGS = {"p", "div", "li", "br", "h1", "h2", "h3", "ul", "ol"}
 class PostingHTMLParser(HTMLParser):
     """Keep text and line breaks from HTML. / HTML의 텍스트와 줄바꿈을 보존합니다."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self.parts = []
+        self.parts: list[str] = []
 
-    def handle_starttag(self, tag, attrs):
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if tag in BLOCK_TAGS:
             self.parts.append("\n")
 
-    def handle_endtag(self, tag):
+    def handle_endtag(self, tag: str) -> None:
         if tag in BLOCK_TAGS:
             self.parts.append("\n")
 
-    def handle_data(self, data):
+    def handle_data(self, data: str) -> None:
         self.parts.append(data)
 
 
-def html_to_text(content):
+def html_to_text(content: str) -> str:
     """Decode escaped markup and remove tags. / 이스케이프를 풀고 HTML 태그를 제거합니다."""
     for _ in range(2):
         content = html.unescape(content)
@@ -57,7 +59,7 @@ def html_to_text(content):
     )
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Save one public Greenhouse job posting as plain text."
     )
@@ -109,7 +111,7 @@ def main():
         output.parent.mkdir(parents=True, exist_ok=True)
 
         output.write_text(posting, encoding="utf-8")
-        metadata = {
+        metadata: SourceMetadata = {
             "source_url": source_url,
             "board": args.board,
             "job_id": args.job_id,
