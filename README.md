@@ -15,8 +15,9 @@ Each result should show the source sentence used for its classification.
 The Python script analyzes **all six categories** above. It returns
 `yes`, `no`, or `unknown` for each category and the matching sentence from the
 posting. Visa sponsorship means employer support for a work visa; an H-1B
-refusal alone does not rule out every other work visa. Live job collection and
-a website are future chapters. These values describe what a posting says; they do not
+refusal alone does not rule out every other work visa. The current collector
+saves one public Greenhouse posting at a time; a scheduled feed and website
+are future chapters. These values describe what a posting says; they do not
 establish an applicant's eligibility or guarantee an immigration outcome.
 
 The script uses Qwen3-8B through a local Ollama server. This is inference with
@@ -52,6 +53,17 @@ CPT `yes`, OPT `yes`, and STEM OPT `no`. Run the full fictional sample check wit
 .venv/bin/python scripts/check_samples.py
 ```
 
+To fetch one public Greenhouse posting, use its board token and job ID:
+
+```bash
+.venv/bin/python scripts/fetch_greenhouse_job.py --board nearform --job-id 7619114003
+```
+
+The collector saves plain text and source metadata under
+`data/results/greenhouse/<board>/`; this directory is excluded from Git.
+Job pages may change or disappear. Analyze a saved `.txt` file with
+`scripts/analyze_job.py --file <path>` after starting Ollama.
+
 ### Samples and validation
 
 The current workflow is:
@@ -61,7 +73,8 @@ The current workflow is:
 2. `scripts/check_samples.py` runs the analyzer on every fictional posting in
    `samples/` and compares its output with `samples/expected_statuses.json`.
 3. The checker reports mismatches so we can review the posting, expected label,
-   prompt, and extraction logic. It does not train the model.
+   prompt, and extraction logic. It does not train the model. The Greenhouse
+   collector provides additional real postings for separate human review.
 
 All files in `samples/` are fictional job postings. The expected status for
 each of the six categories is in
@@ -76,11 +89,11 @@ plain text first. Bullets and complex wording still need more evaluation.
 
 The [real-posting review](docs/REAL_POSTING_REVIEW.md) checks six short excerpts
 and one complete Greenhouse posting. It identified HTML conversion as a required
-step before the planned job-collection feature.
+step for the collector added afterward.
 
 ### Roadmap and Git workflow
 
-1. Collect real US job postings and evaluate them against human-reviewed labels.
+1. Expand real US posting collection and evaluate against human-reviewed labels.
 2. Build a website with category filters, source text, and original posting links.
 3. Add resume-based recommendations after the source evidence is reliable.
 
@@ -106,8 +119,8 @@ Career Match는 미국 유학생을 위해 채용 공고에 명시된 취업 허
 현재 Python 스크립트는 **위의 여섯 항목**을 분석합니다. 항목별로
 `yes`, `no`, `unknown`과 근거 문장을 반환합니다. 비자 스폰서십은
 고용주의 취업 비자 지원을 뜻합니다. H-1B 거절만으로 다른 모든 취업 비자도
-거절한다고 판단하지 않습니다. 실제 공고 수집과 웹사이트는 다음 챕터에서
-구현합니다. 이 값은 공고에
+거절한다고 판단하지 않습니다. 현재 수집기는 공개 Greenhouse 공고를 한 번에
+하나씩 저장합니다. 정기 수집과 웹사이트는 다음 챕터에서 구현합니다. 이 값은 공고에
 적힌 내용을 나타내며, 지원자의 자격이나 비자 승인 여부를 보장하지 않습니다.
 
 스크립트는 로컬 Ollama 서버로 Qwen3-8B를 실행합니다. 기존 모델을
@@ -144,6 +157,17 @@ STEM OPT `no`입니다. 가상 샘플 전체를 검사하려면 다음을 실행
 .venv/bin/python scripts/check_samples.py
 ```
 
+공개 Greenhouse 공고 하나를 가져올 때는 게시판 이름과 공고 ID를 입력합니다.
+
+```bash
+.venv/bin/python scripts/fetch_greenhouse_job.py --board nearform --job-id 7619114003
+```
+
+수집기는 일반 텍스트와 출처 정보를 `data/results/greenhouse/<board>/` 아래에
+저장합니다. 이 폴더는 Git에서 제외합니다. 공고는 수정되거나 사라질 수 있습니다.
+Ollama를 실행한 뒤 저장된 `.txt` 파일을 `scripts/analyze_job.py --file <path>`로
+분석할 수 있습니다.
+
 ### 샘플과 검증
 
 현재 분석·검증 흐름은 다음과 같습니다.
@@ -153,7 +177,8 @@ STEM OPT `no`입니다. 가상 샘플 전체를 검사하려면 다음을 실행
 2. `scripts/check_samples.py`가 `samples/`의 가상 공고를 하나씩 분석하고
    `samples/expected_statuses.json`의 기대값과 비교합니다.
 3. 불일치가 나오면 공고 원문, 기대값, 모델 지침, 근거 추출 코드를
-   검토합니다. 이 과정에서 모델을 학습시키지는 않습니다.
+   검토합니다. 이 과정에서 모델을 학습시키지는 않습니다. Greenhouse 수집기는
+   별도로 사람이 검토할 실제 공고를 제공합니다.
 
 `samples/`의 파일은 모두 가상 채용 공고입니다. 여섯 항목의
 기대값은 [`samples/expected_statuses.json`](samples/expected_statuses.json)에
@@ -166,12 +191,12 @@ STEM OPT `no`입니다. 가상 샘플 전체를 검사하려면 다음을 실행
 변환해야 하며 불릿·복잡한 표현은 추가 평가가 필요합니다.
 
 [실제 공고 검토](docs/REAL_POSTING_REVIEW.md)에서는 짧은 발췌 여섯 개와
-Greenhouse 전체 공고 한 개를 확인했습니다. 공고 수집 기능을 만들 때
+Greenhouse 전체 공고 한 개를 확인했습니다. 이후 추가한 수집기에
 HTML 변환 단계가 필요하다는 점을 확인했습니다.
 
 ### 로드맵과 Git 작업 방식
 
-1. 실제 미국 공고를 수집하고 사람이 확인한 정답과 비교합니다.
+1. 실제 미국 공고 수집을 확대하고 사람이 확인한 정답과 비교합니다.
 2. 항목별 필터, 근거 문장, 원문 링크가 있는 웹 화면을 만듭니다.
 3. 공고 근거가 신뢰할 만해지면 이력서 기반 추천을 추가합니다.
 

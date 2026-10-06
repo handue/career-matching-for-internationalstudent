@@ -84,6 +84,24 @@ checker, 16 fictional postings, their answer key, README, and the real-posting
 review. The 96/96 result is a fictional-sample check, not a measured accuracy
 rate on live job postings.
 
+### 2026-10-02 — First Greenhouse collector
+
+- Added `scripts/fetch_greenhouse_job.py` to retrieve one public posting by
+  board token and job ID, convert escaped HTML to plain text, and save source
+  metadata alongside the posting.
+- The collector writes under ignored `data/results/greenhouse/`; it does not
+  run on a schedule or build an accuracy dataset.
+- Checked syntax, CLI help, HTML conversion, and one public Nearform fetch.
+  The follow-up analyzer run could not reach the local Ollama server.
+
+### 2026-10-05 — Code walkthrough and documentation
+
+- Reviewed the sample checker and Greenhouse collector step by step, including
+  subprocess exit codes, evidence checks, argument parsing, HTML cleanup, and
+  output paths.
+- Clarified comments, made the checker's failure condition explicit, and used
+  f-strings for its status output. Documented how to run the collector.
+
 ### Next chapters
 
 1. Collect real postings and measure accuracy against human-reviewed labels.
@@ -158,6 +176,23 @@ rate on live job postings.
 이 시점에 검토 가능한 범위는 분석기, 샘플 검사기, 가상 공고 16개와
 정답표, README, 실제 공고 검토 기록입니다. 96/96 통과는 가상 샘플
 검사 결과이며 실제 공고에 대한 정확도 수치는 아닙니다.
+
+### 2026-10-02 — 첫 Greenhouse 수집기
+
+- `scripts/fetch_greenhouse_job.py`를 추가해 게시판 이름과 공고 ID로 공개
+  공고 하나를 가져오고, 이스케이프된 HTML을 일반 텍스트로 변환하며,
+  원문 출처 정보를 함께 저장합니다.
+- 저장 위치는 Git에서 제외한 `data/results/greenhouse/`입니다. 정기
+  수집이나 정확도 평가용 데이터셋은 아직 구현하지 않았습니다.
+- 문법, 명령행 도움말, HTML 변환, 공개 Nearform 공고 한 건의 수집을
+  확인했습니다. 이후 분석기 실행은 로컬 Ollama 연결에 실패했습니다.
+
+### 2026-10-05 — 코드 학습과 문서 정리
+
+- 샘플 검사기와 Greenhouse 수집기를 순서대로 읽으며 하위 프로세스 종료
+  코드, 근거 검사, 명령행 입력, HTML 정리, 저장 경로를 살펴봤습니다.
+- 주석을 바로잡고 샘플 검사기의 실패 조건을 명시적으로 바꿨으며,
+  출력에 f-string을 사용했습니다. 수집기 실행 방법도 문서화했습니다.
 
 ### 다음 챕터
 
