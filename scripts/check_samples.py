@@ -5,11 +5,11 @@ from pathlib import Path
 import subprocess
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
-CATEGORIES = ("cpt", "opt", "stem_opt", "visa_sponsorship", "h1b", "green_card")
+ROOT: Path = Path(__file__).resolve().parents[1]
+CATEGORIES: tuple[str, ...] = ("cpt", "opt", "stem_opt", "visa_sponsorship", "h1b", "green_card")
 
 
-def main():
+def main() -> int:
     expected = json.loads(
         (ROOT / "samples" / "expected_statuses.json").read_text(encoding="utf-8")
     )

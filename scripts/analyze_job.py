@@ -14,10 +14,19 @@ import sys
 # ex) sys.stderr = standard error stream, sys.exit() = exit the program with a status code, sys.argv = list of command-line arguments, sys.path = list of directories for module search ... etc
 
 import time
+from typing import TypedDict
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-SCHEMA = {
+
+class ExtractionSchema(TypedDict):
+    type: str
+    properties: dict[str, dict[str, object]]
+    required: list[str]
+    additionalProperties: bool
+
+
+SCHEMA: ExtractionSchema = {
     "type": "object",
     "properties": {
         "title": {"type": "string"},
@@ -61,7 +70,7 @@ SCHEMA = {
 }
 
 
-def posting_sentences(posting):
+def posting_sentences(posting: str) -> list[str]:
     """Split sentences and posting lines. / 공고의 문장과 줄을 나눕니다."""
     return [
         part.strip()
@@ -80,7 +89,7 @@ def posting_sentences(posting):
 # |\n+ = matches one or more newline characters
 
 
-def cpt_source_sentences(posting):
+def cpt_source_sentences(posting: str) -> list[str]:
     """Find explicit CPT sentences. / CPT를 명시한 문장을 찾습니다."""
     sentences = posting_sentences(posting)
     return [
@@ -91,7 +100,7 @@ def cpt_source_sentences(posting):
     ]
 
 
-def opt_source_sentences(posting):
+def opt_source_sentences(posting: str) -> list[str]:
     """Find ordinary OPT sentences, excluding STEM OPT. / STEM OPT를 제외한 일반 OPT 문장을 찾습니다."""
     sentences = posting_sentences(posting)
     return [
@@ -107,7 +116,7 @@ def opt_source_sentences(posting):
     ]
 
 
-def stem_opt_source_sentences(posting):
+def stem_opt_source_sentences(posting: str) -> list[str]:
     """Find explicit STEM OPT sentences. / STEM OPT를 명시한 문장을 찾습니다."""
     sentences = posting_sentences(posting)
     return [
@@ -117,7 +126,7 @@ def stem_opt_source_sentences(posting):
     ]
 
 
-def visa_sponsorship_source_sentences(posting):
+def visa_sponsorship_source_sentences(posting: str) -> list[str]:
     """Find work-visa sponsorship wording. / 취업 비자 스폰서십 문장을 찾습니다."""
     sentences = posting_sentences(posting)
     return [
@@ -142,7 +151,7 @@ def visa_sponsorship_source_sentences(posting):
     ]
 
 
-def h1b_source_sentences(posting):
+def h1b_source_sentences(posting: str) -> list[str]:
     """Find explicit H-1B sentences. / H-1B를 명시한 문장을 찾습니다."""
     sentences = posting_sentences(posting)
     return [
@@ -152,7 +161,7 @@ def h1b_source_sentences(posting):
     ]
 
 
-def green_card_source_sentences(posting):
+def green_card_source_sentences(posting: str) -> list[str]:
     """Find permanent-residence wording. / 영주권 관련 문장을 찾습니다."""
     sentences = posting_sentences(posting)
     return [
@@ -166,7 +175,7 @@ def green_card_source_sentences(posting):
     ]
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Extract a job posting with local Ollama."
     )

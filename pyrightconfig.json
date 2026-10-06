@@ -1,0 +1,6 @@
+{
+  "include": ["scripts"],
+  "exclude": [".venv", "data"],
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "standard"
+}
