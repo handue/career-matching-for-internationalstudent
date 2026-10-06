@@ -101,6 +101,24 @@ rate on live job postings.
   output paths.
 - Clarified comments, made the checker's failure condition explicit, and used
   f-strings for its status output. Documented how to run the collector.
+- Added type hints to all script functions and the HTML parser state, described
+  the heterogeneous output schema with `TypedDict`, and enabled standard
+  Pylance/Pyright checks for `scripts/`.
+
+### 2026-10-06 — Saved analyses and status filtering
+
+- Added a command that runs the analyzer on an already fetched Greenhouse
+  posting and saves its result with the original URL and fetch time.
+- Added a separate command to list saved analyses and filter any of the six
+  categories by `yes`, `no`, or `unknown`. Unknown results remain visible.
+- The first real posting previously returned visa sponsorship `no` with an
+  exact source sentence; its other five categories were `unknown`. The CLI
+  filter is an inspection tool, not yet a website or scheduled collector.
+- Defined the saved source and analysis objects with `TypedDict` and checked
+  the actual JSON values before treating them as typed records. The save and
+  list commands now share this validation in `scripts/job_record.py`.
+- Documented the four-stage fetch, analyze, save, and list workflow. Syntax
+  compilation of the new scripts passed when run by the user.
 
 ### Next chapters
 
@@ -193,6 +211,24 @@ rate on live job postings.
   코드, 근거 검사, 명령행 입력, HTML 정리, 저장 경로를 살펴봤습니다.
 - 주석을 바로잡고 샘플 검사기의 실패 조건을 명시적으로 바꿨으며,
   출력에 f-string을 사용했습니다. 수집기 실행 방법도 문서화했습니다.
+- 모든 스크립트 함수와 HTML 파서 상태에 타입 힌트를 붙이고, 여러 값 형태가
+  섞인 출력 스키마를 `TypedDict`로 표현했습니다. `scripts/`에 Pylance/Pyright
+  standard 검사를 설정했습니다.
+
+### 2026-10-06 — 분석 결과 저장과 상태별 조회
+
+- 이미 수집한 Greenhouse 공고를 분석하고 원문 URL·수집 시각과 결과를
+  함께 저장하는 명령을 추가했습니다.
+- 여섯 항목 각각에 대해 `yes`, `no`, `unknown`으로 저장 결과를 조회하는
+  명령을 추가했습니다. `unknown`도 조회할 수 있습니다.
+- 앞서 실행한 실제 공고 한 건은 비자 스폰서십 `no`와 원문 근거가 나왔고,
+  나머지 다섯 항목은 `unknown`이었습니다. 현재 조회 기능은 명령행 도구이며
+  웹사이트나 정기 수집기는 아직 아닙니다.
+- 저장된 출처·분석 객체를 `TypedDict`로 정의하고, JSON 값을 타입으로
+  사용하기 전에 실제 값을 검증하도록 했습니다. 저장·조회 명령이
+  `scripts/job_record.py`의 같은 검증 코드를 사용합니다.
+- 수집·분석·저장·조회 네 단계를 문서화했습니다. 새 스크립트의 문법 검사는
+  사용자가 직접 실행해 통과했습니다.
 
 ### 다음 챕터
 

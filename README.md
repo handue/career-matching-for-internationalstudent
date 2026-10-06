@@ -1,6 +1,6 @@
 # Career Match
 
-[English](#english) · [한국어](#한국어) · [Development log / 진행 기록](docs/PROGRESS.md)
+[English](#english) · [한국어](#한국어) · [Workflow / 처리 흐름](docs/WORKFLOW.md) · [Development log / 진행 기록](docs/PROGRESS.md)
 
 ## English
 
@@ -24,6 +24,9 @@ The script uses Qwen3-8B through a local Ollama server. This is inference with
 an existing model; the sample files are evaluation examples, not training data.
 CLI help, errors, and results are in English. Source-code docstrings and
 project documentation retain English/Korean explanations.
+Function parameters and returns have Python type hints. Pylance/Pyright uses
+`pyrightconfig.json` to check the scripts in standard mode; Python itself does
+not enforce these hints at runtime.
 
 ### Run locally
 
@@ -64,6 +67,21 @@ The collector saves plain text and source metadata under
 Job pages may change or disappear. Analyze a saved `.txt` file with
 `scripts/analyze_job.py --file <path>` after starting Ollama.
 
+To save the analysis together with its source URL and fetch time, then list
+results by category and status:
+
+```bash
+.venv/bin/python scripts/save_job_analysis.py --board nearform --job-id 7619114003
+.venv/bin/python scripts/list_job_analyses.py
+.venv/bin/python scripts/list_job_analyses.py --category visa_sponsorship --status unknown
+```
+
+Saved analysis JSON goes under `data/results/analyses/<board>/`, which is also
+excluded from Git. The list command accepts `yes`, `no`, and `unknown`; an
+`unknown` result means the posting did not establish a clear answer.
+`scripts/job_record.py` defines this saved format and validates JSON values
+when they enter the save and list commands.
+
 ### Samples and validation
 
 The current workflow is:
@@ -101,6 +119,8 @@ The [dated development log](docs/PROGRESS.md) records decisions, failures,
 fixes, and validation. After each chapter, the user reviews the change,
 updates the log, and runs Git commands personally. Keep resumes, credentials,
 and private analysis data out of Git. See the `.gitignore` rules.
+The [workflow guide](docs/WORKFLOW.md) maps each command to its input and
+output.
 
 References: [Ollama chat API](https://docs.ollama.com/api/chat),
 [DHS practical-training overview](https://studyinthestates.dhs.gov/assets/SEVP_PracticalTrainingOverview_1-pager.pdf),
@@ -127,6 +147,9 @@ Career Match는 미국 유학생을 위해 채용 공고에 명시된 취업 허
 사용한 추론이며, 샘플 파일은 학습 데이터가 아닌 검증용 예제입니다.
 명령행 도움말·오류·실행 결과는 영어로 표시합니다. 코드의 docstring과
 프로젝트 문서에는 영어/한국어 설명을 유지합니다.
+함수 인자와 반환값에는 Python 타입 힌트를 붙였습니다. Pylance/Pyright는
+`pyrightconfig.json`에 따라 스크립트를 standard 모드로 검사합니다.
+Python 실행 자체가 타입 힌트를 강제하지는 않습니다.
 
 ### 로컬 실행
 
@@ -168,6 +191,20 @@ STEM OPT `no`입니다. 가상 샘플 전체를 검사하려면 다음을 실행
 Ollama를 실행한 뒤 저장된 `.txt` 파일을 `scripts/analyze_job.py --file <path>`로
 분석할 수 있습니다.
 
+분석 결과를 원문 URL·수집 시각과 함께 저장하고, 항목과 상태별로 조회하려면:
+
+```bash
+.venv/bin/python scripts/save_job_analysis.py --board nearform --job-id 7619114003
+.venv/bin/python scripts/list_job_analyses.py
+.venv/bin/python scripts/list_job_analyses.py --category visa_sponsorship --status unknown
+```
+
+결과 JSON은 Git에서 제외되는 `data/results/analyses/<board>/`에 저장합니다.
+조회 명령은 `yes`, `no`, `unknown`을 모두 허용합니다. `unknown`은 공고만으로
+확실한 답을 확인하지 못했다는 뜻입니다.
+`scripts/job_record.py`는 저장 형식을 정의하고 저장·조회 명령으로 들어오는
+JSON 값을 검사합니다.
+
 ### 샘플과 검증
 
 현재 분석·검증 흐름은 다음과 같습니다.
@@ -204,6 +241,7 @@ HTML 변환 단계가 필요하다는 점을 확인했습니다.
 남깁니다. 챕터가 끝나면 사용자가 변경 사항을 확인하고 Git 명령을
 직접 실행합니다. 이력서·인증 정보·개인 분석 데이터는 Git에 넣지
 않습니다. `.gitignore` 규칙을 참고하세요.
+[처리 흐름 문서](docs/WORKFLOW.md)에서 각 명령의 입력과 출력을 볼 수 있습니다.
 
 참고 자료: [Ollama 채팅 API](https://docs.ollama.com/api/chat),
 [미 국토안보부 실무훈련 개요](https://studyinthestates.dhs.gov/assets/SEVP_PracticalTrainingOverview_1-pager.pdf),
