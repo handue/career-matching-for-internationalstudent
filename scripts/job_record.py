@@ -4,8 +4,11 @@ from typing import Literal, TypedDict, cast
 
 
 Status = Literal["yes", "no", "unknown"]
+# Literal = only accept "yes" or "no" or "unknown"
+# ex) as Typescript it describes, type Status = "yes" | "no" | "unknown";
 
-
+# TypedDict is similar with interface in Typescript
+# it's a tool letting know to type checker for what is the type of each words.
 class SourceMetadata(TypedDict):
     source_url: str
     board: str
@@ -45,6 +48,7 @@ def require_object(value: object, label: str) -> dict[str, object]:
     if not isinstance(value, dict) or any(not isinstance(key, str) for key in value):
         raise ValueError(f"{label} must be a JSON object with string keys")
     return cast(dict[str, object], value)
+    # cast() => consider this value as a type.
 
 
 def require_string(value: object, label: str) -> str:

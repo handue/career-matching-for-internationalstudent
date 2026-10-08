@@ -59,6 +59,43 @@ def html_to_text(content: str) -> str:
     )
 
 
+def fetch_and_save_job(board: str, job_id: int) -> tuple[Path, str]:
+    """Fetch and save one posting. / 공고 하나를 가져와 저장합니다."""
+    api_url = f"https://boards-api.greenhouse.io/v1/boards/{board}/jobs/{job_id}"
+    request = Request(api_url, headers={"User-Agent": "career-match/0.1"})
+    with urlopen(request, timeout=30) as response:
+        job = json.load(response)
+    title = job["title"]
+    company = job["company_name"]
+    location = job["location"]["name"]
+    source_url = job["absolute_url"]
+    content = job["content"]
+    if not all(
+        isinstance(value, str)
+        for value in (title, company, location, source_url, content)
+    ):
+        raise ValueError("Unexpected job field types")
+    description = html_to_text(content)
+    if not description:
+        raise ValueError("Empty job description")
+    posting = "\n".join((title, company, location, "", description)) + "\n"
+    output = ROOT / "data" / "results" / "greenhouse" / board / f"{job_id}.txt"
+    # Create the output directory and any missing parents. / 누락된 상위 폴더까지 만듭니다.
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    output.write_text(posting, encoding="utf-8")
+    metadata: SourceMetadata = {
+        "source_url": source_url,
+        "board": board,
+        "job_id": job_id,
+        "fetched_at_utc": datetime.now(timezone.utc).isoformat(),
+    }
+    output.with_suffix(".json").write_text(
+        json.dumps(metadata, indent=2) + "\n", encoding="utf-8"
+    )
+    return output, source_url
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Save one public Greenhouse job posting as plain text."
@@ -83,43 +120,8 @@ def main() -> int:
         print("Invalid board token or job ID.", file=sys.stderr)
         return 1
 
-    api_url = (
-        f"https://boards-api.greenhouse.io/v1/boards/{args.board}/jobs/{args.job_id}"
-    )
-    request = Request(api_url, headers={"User-Agent": "career-match/0.1"})
     try:
-        with urlopen(request, timeout=30) as response:
-            job = json.load(response)
-        title = job["title"]
-        company = job["company_name"]
-        location = job["location"]["name"]
-        source_url = job["absolute_url"]
-        content = job["content"]
-        if not all(
-            isinstance(value, str)
-            for value in (title, company, location, source_url, content)
-        ):
-            raise ValueError("Unexpected job field types")
-        description = html_to_text(content)
-        if not description:
-            raise ValueError("Empty job description")
-        posting = "\n".join((title, company, location, "", description)) + "\n"
-        output = (
-            ROOT / "data" / "results" / "greenhouse" / args.board / f"{args.job_id}.txt"
-        )
-        # Create the output directory and any missing parents. / 누락된 상위 폴더까지 만듭니다.
-        output.parent.mkdir(parents=True, exist_ok=True)
-
-        output.write_text(posting, encoding="utf-8")
-        metadata: SourceMetadata = {
-            "source_url": source_url,
-            "board": args.board,
-            "job_id": args.job_id,
-            "fetched_at_utc": datetime.now(timezone.utc).isoformat(),
-        }
-        output.with_suffix(".json").write_text(
-            json.dumps(metadata, indent=2) + "\n", encoding="utf-8"
-        )
+        output, source_url = fetch_and_save_job(args.board, args.job_id)
     except HTTPError as error:
         print("Greenhouse HTTP error {}.".format(error.code), file=sys.stderr)
         return 1
