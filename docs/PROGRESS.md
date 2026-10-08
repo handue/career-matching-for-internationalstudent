@@ -79,10 +79,9 @@ Git 명령은 사용자가 직접 실행합니다.
 - Remaining gaps: no real job collection or website. Complex HTML and bullet
   formatting still need evaluation.
 
-At this checkpoint, the reviewable project consists of the analyzer, sample
-checker, 16 fictional postings, their answer key, README, and the real-posting
-review. The 96/96 result is a fictional-sample check, not a measured accuracy
-rate on live job postings.
+At this checkpoint, the project consists of the analyzer, sample checker, 16
+fictional postings, their answer key, and README. The 96/96 result is a
+fictional-sample check, not a measured accuracy rate on live job postings.
 
 ### 2026-10-02 — First Greenhouse collector
 
@@ -120,9 +119,31 @@ rate on live job postings.
 - Documented the four-stage fetch, analyze, save, and list workflow. Syntax
   compilation of the new scripts passed when run by the user.
 
+### 2026-10-06 — Workflow scope
+
+- A Latitude AI fetch attempt returned HTTP 404 from the Greenhouse Job Board
+  API. No posting or analysis was saved from that attempt.
+- Removed the proposed manual real-posting review chapter. The current product
+  flow is fetch, analyze, save, and list. Fictional sample checks remain as
+  code regression checks.
+
+### 2026-10-08 — Search-source probe
+
+- Added an isolated DDGS metasearch probe that searches one query, removes
+  duplicate URLs, fetches HTML, and stores extracted text for inspection.
+- Kept visa analysis and ranking outside this probe. Extracted text alone does
+  not confirm that a result is an active US job posting.
+- Documented optional search dependencies and commands for the user to run.
+  The user ran a Lever-site query: DDGS returned three search results, but
+  all three pages returned HTTP 404, so no job text was extracted. Search
+  snippets alone are not usable as job postings.
+- Removed the unused Greenhouse board-sync prototype and its board configuration
+  while retaining single-posting fetch, analysis, and saved-result tools.
+
 ### Next chapters
 
-1. Collect real postings and measure accuracy against human-reviewed labels.
+1. Test search queries that lead to live job pages, then connect verified page
+   text to the existing analyzer.
 2. Build a simple interface for viewing classifications and their evidence.
 3. Add resume-based matching once source classification is reliable.
 
@@ -191,8 +212,8 @@ rate on live job postings.
 - 남은 범위: 실제 공고 수집과 웹 화면은 미구현.
   복잡한 HTML과 불릿 형식도 추가 평가가 필요합니다.
 
-이 시점에 검토 가능한 범위는 분석기, 샘플 검사기, 가상 공고 16개와
-정답표, README, 실제 공고 검토 기록입니다. 96/96 통과는 가상 샘플
+이 시점에 만든 것은 분석기, 샘플 검사기, 가상 공고 16개와
+정답표, README입니다. 96/96 통과는 가상 샘플
 검사 결과이며 실제 공고에 대한 정확도 수치는 아닙니다.
 
 ### 2026-10-02 — 첫 Greenhouse 수집기
@@ -230,8 +251,29 @@ rate on live job postings.
 - 수집·분석·저장·조회 네 단계를 문서화했습니다. 새 스크립트의 문법 검사는
   사용자가 직접 실행해 통과했습니다.
 
+### 2026-10-06 — 작업 범위 정리
+
+- Latitude AI 공고 수집 시 Greenhouse Job Board API에서 HTTP 404가
+  나왔습니다. 이 시도에서는 공고나 분석 결과를 저장하지 않았습니다.
+- 제안했던 실제 공고 사람 검토 챕터를 제거했습니다. 현재 제품 흐름은
+  수집·분석·저장·조회입니다. 가상 샘플 검사는 코드 변경 확인용으로 유지합니다.
+
+### 2026-10-08 — 검색 수집원 시험
+
+- DDGS 자동 메타검색으로 검색어 하나의 URL 후보를 찾고 중복을 제거한 뒤,
+  HTML 텍스트를 저장하는 독립 시험 스크립트를 추가했습니다.
+- 이 단계에서는 비자 분석과 순위 계산을 연결하지 않았습니다. 텍스트를
+  추출했다는 사실만으로 실제 미국 채용 공고임이 확인되지는 않습니다.
+- 선택적 패키지와 사용자가 실행할 명령을 문서화했습니다.
+- 사용자가 Lever 사이트 검색을 실행한 결과, 검색 결과 3개가 나왔지만 페이지는
+  모두 HTTP 404를 반환해 공고 본문을 추출하지 못했습니다. 검색 요약만으로는
+  공고를 분석할 수 없습니다.
+- 사용하지 않는 Greenhouse 게시판 동기화 시험 코드와 설정을 제거하고,
+  단일 공고 수집·분석·결과 저장 및 조회 도구는 유지했습니다.
+
 ### 다음 챕터
 
-1. 실제 공고를 수집해 사람이 확인한 정답과 정확도를 비교합니다.
+1. 실제로 열리는 공고를 찾는 검색어를 시험하고, 확인된 본문을 기존 분석기에
+   연결합니다.
 2. 분류 결과와 근거를 보여주는 간단한 화면을 만듭니다.
 3. 근거 분류를 신뢰할 수 있게 되면 이력서 매칭을 추가합니다.

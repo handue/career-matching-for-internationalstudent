@@ -2,8 +2,10 @@
 
 ## English
 
-The current workflow handles one public Greenhouse posting at a time. It does
-not collect jobs on a schedule or recommend where to apply yet.
+The steps below describe the legacy single-posting Greenhouse workflow, kept
+as reference code. The planned discovery flow uses DDGS search; the probe is
+not yet connected to analysis and saving. Scheduled collection and application
+recommendations are not implemented yet.
 
 1. `scripts/fetch_greenhouse_job.py` requests a posting from the Greenhouse
    API. It saves title, company, location, and cleaned description as a `.txt`
@@ -24,13 +26,14 @@ analyzer with the expected answers for fictional postings; it is not model
 training or a measure of accuracy on real jobs.
 
 Fetched text and analysis results live under ignored `data/results/`. A saved
-result is evidence for review, not confirmation of an applicant's eligibility
-or a guarantee that the posting is still open.
+result does not confirm an applicant's eligibility or guarantee that the
+posting is still open.
 
 ## 한국어
 
-현재 흐름은 공개 Greenhouse 공고를 한 번에 하나씩 처리합니다. 정기 수집이나
-지원처 추천은 아직 구현하지 않았습니다.
+아래는 참고용으로 남긴 이전 Greenhouse 단일 공고 처리 흐름입니다. 새 공고 검색은
+DDGS로 시험 중이며 검색 결과를 분석·저장 단계에 아직 연결하지 않았습니다.
+정기 수집과 지원처 추천도 아직 구현하지 않았습니다.
 
 1. `scripts/fetch_greenhouse_job.py`가 Greenhouse API에서 공고를 가져옵니다.
    제목·회사·지역·정리한 본문을 `.txt`로 저장하고, 옆의 `.json`에 원문 URL,
@@ -49,5 +52,4 @@ or a guarantee that the posting is still open.
 아닙니다.
 
 수집 텍스트와 분석 결과는 Git에서 제외한 `data/results/` 아래에 있습니다.
-저장 결과는 사람이 검토할 근거이며 지원자의 자격이나 공고의 현재 상태를
-보장하지 않습니다.
+저장 결과는 지원자의 자격이나 공고의 현재 상태를 보장하지 않습니다.
