@@ -1,0 +1,9 @@
+This is a fictional job posting for testing, not a real vacancy.
+Company: Example Devices
+Title: Software Engineering Intern
+Location: Palo Alto, CA, USA
+Requirements: Python and software engineering fundamentals.
+This internship may convert to a full-time role after a performance review.
+The full-time conversion will not offer work authorization sponsorship in the future.
+Applicants must be eligible to work in the United States and must not require future work authorization sponsorship.
+We will not provide immigration sponsorship assistance or sign documentation in support of CPT or OPT.

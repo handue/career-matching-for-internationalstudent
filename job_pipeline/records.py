@@ -1,19 +1,30 @@
 """Types and validation for saved job analyses. / 저장된 공고 분석의 타입과 검증입니다."""
 
-from typing import Literal, TypedDict, cast
+from typing import Literal, NotRequired, TypedDict, cast
 
 
 Status = Literal["yes", "no", "unknown"]
 # Literal = only accept "yes" or "no" or "unknown"
 # ex) as Typescript it describes, type Status = "yes" | "no" | "unknown";
 
+# Shared by CLI filters and Django views. / CLI 필터와 Django 화면이 공유합니다.
+CATEGORIES: tuple[str, ...] = (
+    "cpt", "opt", "stem_opt", "visa_sponsorship", "h1b", "green_card"
+)
+STATUSES: tuple[str, ...] = ("yes", "no", "unknown")
+
 # TypedDict is similar with interface in Typescript
 # it's a tool letting know to type checker for what is the type of each words.
 class SourceMetadata(TypedDict):
     source_url: str
-    board: str
-    job_id: int
     fetched_at_utc: str
+    board: NotRequired[str]
+    job_id: NotRequired[int]
+    discovery: NotRequired[str]
+    posted_at: NotRequired[str | None]
+    deadline_at: NotRequired[str | None]
+    deadline_status: NotRequired[str]
+    availability: NotRequired[str]
 
 
 class AnalysisResult(TypedDict):
@@ -72,15 +83,32 @@ def require_status(value: object, label: str) -> Status:
 def parse_source_metadata(value: object) -> SourceMetadata:
     """Validate fetched-posting metadata. / 수집한 공고의 출처 정보를 검증합니다."""
     data = require_object(value, "Source metadata")
-    job_id = data.get("job_id")
-    if isinstance(job_id, bool) or not isinstance(job_id, int) or job_id <= 0:
-        raise ValueError("source.job_id must be a positive integer")
-    return {
+    source: SourceMetadata = {
         "source_url": require_string(data.get("source_url"), "source.source_url"),
-        "board": require_string(data.get("board"), "source.board"),
-        "job_id": job_id,
         "fetched_at_utc": require_string(data.get("fetched_at_utc"), "source.fetched_at_utc"),
     }
+    if "board" in data:
+        source["board"] = require_string(data["board"], "source.board")
+    if "job_id" in data:
+        job_id = data["job_id"]
+        if isinstance(job_id, bool) or not isinstance(job_id, int) or job_id <= 0:
+            raise ValueError("source.job_id must be a positive integer")
+        source["job_id"] = job_id
+    if "discovery" in data:
+        source["discovery"] = require_string(data["discovery"], "source.discovery")
+    for field in ("posted_at", "deadline_at"):
+        date_value = data.get(field)
+        if date_value is not None and not isinstance(date_value, str):
+            raise ValueError(f"source.{field} must be a string or null")
+        if field == "posted_at":
+            source["posted_at"] = date_value
+        elif field == "deadline_at":
+            source["deadline_at"] = date_value
+    if "deadline_status" in data:
+        source["deadline_status"] = require_string(data["deadline_status"], "source.deadline_status")
+    if "availability" in data:
+        source["availability"] = require_string(data["availability"], "source.availability")
+    return source
 
 
 def parse_analysis_result(value: object) -> AnalysisResult:

@@ -126,5 +126,13 @@
     "visa_sponsorship": "unknown",
     "h1b": "unknown",
     "green_card": "unknown"
+  },
+  "job_future_sponsorship_no_cpt_opt_no.txt": {
+    "cpt": "no",
+    "opt": "no",
+    "stem_opt": "unknown",
+    "visa_sponsorship": "no",
+    "h1b": "unknown",
+    "green_card": "unknown"
   }
 }

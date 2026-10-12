@@ -18,6 +18,9 @@ from typing import TypedDict
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+from job_pipeline.paths import ROOT
+from job_pipeline.records import AnalysisResult, parse_analysis_result
+
 
 class ExtractionSchema(TypedDict):
     type: str
@@ -133,7 +136,7 @@ def visa_sponsorship_source_sentences(posting: str) -> list[str]:
         sentence.strip()
         for sentence in sentences
         if re.search(
-            r"\bvisa sponsorship\b|\bwork[- ]visa\b|\bvisa sponsor(?:ship|ing)?\b",
+            r"\b(?:visa|work[- ]authorization|immigration) sponsorship\b|\bwork[- ]visa\b|\bvisa sponsor(?:ship|ing)?\b",
             sentence,
             flags=re.IGNORECASE,
         )
@@ -175,49 +178,8 @@ def green_card_source_sentences(posting: str) -> list[str]:
     ]
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Extract a job posting with local Ollama."
-    )
-    # argparse.ArgumentParser -> making a command-line object to extract a job posting with local Ollama.
-    parser.add_argument("--model", default="qwen3:8b", help="Ollama model name")
-    # -- : normally command-line arguments start with a dash, and double dashes are used for long options.
-    # --model : registered "--model" in terminal, If it's blank, default value is "qwen3:8b"
-    # help : when you command --help, it will show the description of the argument.
-    parser.add_argument(
-        "--file",
-        type=Path,
-        default=Path(__file__).resolve().parents[1] / "samples" / "job.txt",
-        help="Path to a plain-text job posting",
-    )
-    # __file__ : Python variable stores the path of the current Python file.
-    # Path(__file__) = creates a Path object representing the current file's path.
-    # .resolve() : converts the path to an absolute path
-    # .parents[1] = go up one directory from current file's directory, ex) /career-match/scripts/analyze_job.py. parents[0] = scripts, parents[1] = project root, career-match
-    # / "samples" / "job.txt" = append "samples/job.txt" to the path, ex) /career-match/samples/job.txt
-
-    parser.add_argument(
-        "--dry-run", action="store_true", help="Show input without calling AI"
-    )
-    # create a coomand-line option named --dry-run = if thhe user includes this flag, set a boolean value to true.
-    # which means args.dry_run becomes True if the user includes --dry-run in the command line, otherwise it will be False.
-    # action = "store_true" = if the flag is provided, store true (--dry-run is true, it's kinda set of --dry-run). if the flag is not provided, store false.
-
-    args = parser.parse_args()
-    # read the command-line arguments the user type
-
-    try:
-        posting = args.file.read_text(encoding="utf-8")
-    except OSError as error:
-        # error handling for file-reading problems
-        print("Cannot read posting: {}".format(error), file=sys.stderr)
-        return 1
-    # return 1 = error in python script, return 0 = success in python script.
-    if args.dry_run:
-        # # --dry-run is a special mode = "do not call AI/model, just show the posting and exit"
-        print(posting)
-        return 0
-
+def analyze_posting(posting: str, model: str) -> AnalysisResult:
+    """Call Ollama for CLI/batch analysis; return validated data. / CLI·일괄 분석에서 Ollama를 호출하고 검증된 데이터를 반환합니다."""
     cpt_sentences = cpt_source_sentences(posting)
     opt_sentences = opt_source_sentences(posting)
     stem_opt_sentences = stem_opt_source_sentences(posting)
@@ -228,7 +190,7 @@ def main() -> int:
     # HTTP request body for Ollama
 
     payload = {
-        "model": args.model,
+        "model": model,
         "stream": False,
         # stream = False = wait for the entire response before returning it, rather than receiving it in chunks.
         "think": False,
@@ -271,7 +233,10 @@ def main() -> int:
                     "including H-1B, not accepting CPT/OPT or green-card sponsorship. "
                     "Set yes for an explicit work-visa sponsorship offer. Set no ONLY "
                     "for an explicit refusal of work-visa sponsorship in general; "
-                    "refusing H-1B alone does not mean all visa sponsorship is refused. "
+                    "a refusal of future work-authorization sponsorship counts as no "
+                    "for that future stage, and the evidence must preserve that scope. "
+                    "Do not infer general work-visa refusal from CPT or OPT refusal alone. "
+                    "Refusing H-1B alone does not mean all visa sponsorship is refused. "
                     "If sponsorship is available only to a subset of candidates, "
                     "that is a conditional offer and counts as yes; preserve the "
                     "condition in the evidence. Otherwise use unknown. "
@@ -319,7 +284,6 @@ def main() -> int:
         data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json"},
     )
-    started = time.perf_counter()
     try:
         # with = call urlopen, get an HTTP response, and automatically close the response when done. (context manager)
         with urlopen(request, timeout=300) as response:
@@ -368,21 +332,63 @@ def main() -> int:
                 extracted[status_key] = "unknown"
                 extracted[evidence_key] = ""
     except HTTPError as error:
-        print(
-            "Ollama HTTP error {}. Check the server and model.".format(error.code),
-            file=sys.stderr,
-        )
-        return 1
-    except (URLError, TimeoutError, OSError):
-        print(
-            "Cannot reach Ollama or request timed out. Run ollama serve and check ollama list.",
-            file=sys.stderr,
-        )
-        return 1
+        raise ValueError(f"Ollama HTTP error {error.code}. Check the server and model.") from error
+    except (URLError, TimeoutError, OSError) as error:
+        raise ValueError("Cannot reach Ollama or request timed out. Run ollama serve and check ollama list.") from error
     except (ValueError, KeyError, TypeError) as error:
-        print("Invalid AI response: {}".format(error), file=sys.stderr)
-        return 1
+        raise ValueError(f"Invalid AI response: {error}") from error
+    return parse_analysis_result(extracted)
 
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Extract a job posting with local Ollama."
+    )
+    # argparse.ArgumentParser -> making a command-line object to extract a job posting with local Ollama.
+    parser.add_argument("--model", default="qwen3:8b", help="Ollama model name")
+    # -- : normally command-line arguments start with a dash, and double dashes are used for long options.
+    # --model : registered "--model" in terminal, If it's blank, default value is "qwen3:8b"
+    # help : when you command --help, it will show the description of the argument.
+    parser.add_argument(
+        "--file",
+        type=Path,
+        default=ROOT / "samples" / "job.txt",
+        help="Path to a plain-text job posting",
+    )
+    # __file__ : Python variable stores the path of the current Python file.
+    # Path(__file__) = creates a Path object representing the current file's path.
+    # .resolve() : converts the path to an absolute path
+    # ROOT comes from job_pipeline.paths. / 프로젝트 루트는 공통 경로 모듈에서 가져옵니다.
+    # / "samples" / "job.txt" = append "samples/job.txt" to the path, ex) /career-match/samples/job.txt
+
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show input without calling AI"
+    )
+    # create a coomand-line option named --dry-run = if thhe user includes this flag, set a boolean value to true.
+    # which means args.dry_run becomes True if the user includes --dry-run in the command line, otherwise it will be False.
+    # action = "store_true" = if the flag is provided, store true (--dry-run is true, it's kinda set of --dry-run). if the flag is not provided, store false.
+
+    args = parser.parse_args()
+    # read the command-line arguments the user type
+
+    try:
+        posting = args.file.read_text(encoding="utf-8")
+    except OSError as error:
+        # error handling for file-reading problems
+        print("Cannot read posting: {}".format(error), file=sys.stderr)
+        return 1
+    # return 1 = error in python script, return 0 = success in python script.
+    if args.dry_run:
+        # # --dry-run is a special mode = "do not call AI/model, just show the posting and exit"
+        print(posting)
+        return 0
+
+    started = time.perf_counter()
+    try:
+        extracted = analyze_posting(posting, args.model)
+    except ValueError as error:
+        print(str(error), file=sys.stderr)
+        return 1
     print(json.dumps(extracted, ensure_ascii=False, indent=2))
     print("Elapsed: {:.1f}s".format(time.perf_counter() - started))
     return 0
