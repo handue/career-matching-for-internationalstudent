@@ -1,0 +1,70 @@
+{% extends "jobs/base.html" %}
+{% block content %}
+<section>
+  <h2>Update job postings</h2>
+  <p class="muted">Collection runs in a separate worker. Saved results stay available while it runs.</p>
+  <form id="collection-form" action="{% url 'jobs:create_collection' %}" method="post">
+    {% csrf_token %}{{ form.as_p }}<button id="collect-button">Start collection</button>
+  </form>
+  <p id="collection-status" role="status"></p>
+  <h3>Recent collection runs</h3>
+  <ul>{% for run in runs %}<li>{{ run.created_at }} — {{ run.status }}{% if run.error %}: {{ run.error }}{% endif %}
+      <a href="{% url 'jobs:collection_status' run.pk %}">View status</a></li>
+      {% empty %}<li>No collection runs yet.</li>{% endfor %}</ul>
+</section>
+<section>
+  <h2>Saved analyses</h2>
+  <form method="get">
+    <label>Category <select name="category">{% for value in categories %}<option value="{{ value }}" {% if value == category %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label>Status <select name="status"><option value="">All</option>{% for value in statuses %}<option value="{{ value }}" {% if value == status %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <button>Filter</button>
+  </form>
+  <p>{{ total }} matching analyses. Showing up to 100.</p>
+  <p class="muted">Unknown means the posting does not establish a clear answer. Saved analyses may be outdated.</p>
+</section>
+{% for card in cards %}
+<article>
+  <h3>{{ card.job.title }} · {{ card.job.company }}</h3>
+  <p>{{ card.job.location }}</p>
+  <p>{{ category }}: <strong>{{ card.status }}</strong></p>
+  {% if card.evidence %}<blockquote>{{ card.evidence }}</blockquote>{% endif %}
+  <a href="{{ card.job.source_url }}" target="_blank" rel="noopener noreferrer">Original posting</a>
+</article>
+{% empty %}<p>No saved analyses match this filter. Import existing files or start collection.</p>{% endfor %}
+<script>
+  const form = document.getElementById("collection-form");
+  const button = document.getElementById("collect-button");
+  const output = document.getElementById("collection-status");
+  async function watch(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Cannot read collection status. Sign in again if needed.");
+      const job = await response.json();
+      output.textContent = `Collection: ${job.status}${job.error ? " — " + job.error : ""}`;
+      if (["queued", "running"].includes(job.status)) {
+        setTimeout(() => watch(url), 2000);
+      } else {
+        button.disabled = false;
+        if (job.status === "completed") location.reload();
+      }
+    } catch (error) {
+      output.textContent = error.message;
+      button.disabled = false;
+    }
+  }
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    button.disabled = true;
+    try {
+      const response = await fetch(form.action, { method: "POST", body: new FormData(form) });
+      const job = await response.json();
+      if (!response.ok) throw new Error(JSON.stringify(job.errors || "Cannot start collection"));
+      output.textContent = `Collection: ${job.status}`;
+      watch(job.status_url);
+    } catch (error) {
+      output.textContent = error.message;
+      button.disabled = false;
+    }
+  });
+</script>
+{% endblock %}

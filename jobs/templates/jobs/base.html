@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career Match</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 0 1rem; color: #18212c; background: #f5f7fa; }
+    section, article { background: white; padding: 1rem 1.25rem; margin: 1rem 0; border: 1px solid #dce2ea; border-radius: 8px; }
+    input, select, button { font: inherit; padding: .4rem; }
+    button { cursor: pointer; } a { color: #175fba; } blockquote { margin-left: 0; border-left: 3px solid #b7c7dc; padding-left: 1rem; }
+    .muted { color: #526174; } label { display: inline-block; margin-right: .5rem; }
+  </style>
+</head>
+<body>
+  <h1>Career Match</h1>
+  {% if user.is_authenticated %}
+  <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Sign out</button></form>
+  {% endif %}
+  {% block content %}{% endblock %}
+</body>
+</html>

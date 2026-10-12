@@ -1,0 +1,2 @@
+-r requirements-search.txt
+Django>=5.2.18,<5.3

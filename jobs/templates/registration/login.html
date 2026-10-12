@@ -1,0 +1,10 @@
+{% extends "jobs/base.html" %}
+{% block content %}
+<section>
+  <h2>Sign in</h2>
+  <form method="post">{% csrf_token %}{{ form.as_p }}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    <button>Sign in</button>
+  </form>
+</section>
+{% endblock %}

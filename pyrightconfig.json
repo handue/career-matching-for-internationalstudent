@@ -1,6 +1,16 @@
 {
-  "include": ["scripts"],
-  "exclude": [".venv", "data"],
+  "include": [
+    "main.py",
+    "manage.py",
+    "web_config",
+    "jobs",
+    "job_pipeline",
+    "tests"
+  ],
+  "exclude": [
+    ".venv",
+    "data"
+  ],
   "pythonVersion": "3.13",
   "typeCheckingMode": "standard"
 }
